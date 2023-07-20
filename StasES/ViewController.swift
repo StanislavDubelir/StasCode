@@ -38,28 +38,47 @@ class ViewController: UIViewController {
         
         let disc = (b * b) - 4 * a * c
         
-        guard a > 0
-        else {return}
-        
-        if disc < 0 {
+        guard disc >= 0 else {
             root1Label.text = "No roots"
             root2Label.text = "No roots"
             discResLabel.text = "D = \(disc)"
+            return
         }
-        else if disc == 0 {
+        
+        guard disc > 0 || disc < 0 else {
             let x = -b / (2 * a)
             root1Label.text = "\(x)"
             discResLabel.text = "D = \(disc)"
+            return
         }
-        else if disc > 0{
-            let x1 = (-b + sqrt(disc)) / 2 * a
-            let x2 = (-b + sqrt(disc)) / 2 * a
+        
+        guard disc <= 0 else {
+            let x1 = (-b + sqrt(disc)) / (2 * a)
+            let x2 = (-b - sqrt(disc)) / (2 * a)
             root1Label.text = "\(x1)"
             root2Label.text = "\(x2)"
             discResLabel.text = "D = \(disc)"
-            
+            return
         }
     }
 }
+
         
-//++++++test
+//        if disc < 0 {
+//            root1Label.text = "No roots"
+//            root2Label.text = "No roots"
+//            discResLabel.text = "D = \(disc)"
+//        }
+//        else if disc == 0 {
+//            let x = -b / (2 * a)
+//            root1Label.text = "\(x)"
+//            discResLabel.text = "D = \(disc)"
+//        }
+//        else if disc > 0{
+//            let x1 = (-b + sqrt(disc)) / 2 * a
+//            let x2 = (-b + sqrt(disc)) / 2 * a
+//            root1Label.text = "\(x1)"
+//            root2Label.text = "\(x2)"
+//            discResLabel.text = "D = \(disc)"
+            
+
