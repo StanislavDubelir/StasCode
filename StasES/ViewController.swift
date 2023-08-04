@@ -72,6 +72,15 @@ class ViewController: UIViewController {
             case twoRoots
         }
         
+        let userDefaults = UserDefaults.standard
+
+        func saveResult(root1:String, root2:String, disc:String){
+            userDefaults.set(root1, forKey: "root1")
+            userDefaults.set(root2, forKey: "root2")
+            userDefaults.set(disc, forKey: "disc")
+            }
+        
+        
         func calculate(for answers: Results){
             switch answers{
                 
@@ -91,6 +100,8 @@ class ViewController: UIViewController {
                 root2Label.text = "\(x2)"
                 discResLabel.text = "D = \(disc)"
             }
+            saveResult(root1: root1Label.text ?? "", root2: root2Label.text ?? "", disc: discResLabel.text ?? "")
+            print("Save")
         }
         guard disc >= .zero else {
             calculate(for: .noRoots)
@@ -104,13 +115,11 @@ class ViewController: UIViewController {
             calculate(for: .twoRoots)
             return
         }
-        
-        
             }
-        }
-    
+                }
 
         
+    
         
             
 //            guard disc >= .zero else {
