@@ -7,42 +7,50 @@
 
 import UIKit
 
-class HistoryViewController: UIViewController{
+final class HistoryViewController: UIViewController{
     
     
-    @IBOutlet weak var historyTableView: UITableView!
+    @IBOutlet private weak var historyTableView: UITableView!
     
     let identifier = "historyCell"
-
-    var arrayModel = [resultModel]()
+    let currentDate = Date()
+    var arrayModel = [ResultModel]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let savedResults = UserDefaults.standard.object(forKey: "SavedResults") as? Data {
+            let decoder = JSONDecoder()
+            if let loadedresults = try? decoder.decode(ResultModel.self, from: savedResults){
+                arrayModel.append(loadedresults)
+                historyTableView?.reloadData()
+                print(loadedresults)
+            }
         }
     }
-
-extension HistoryViewController: UITableViewDataSource, UITableViewDelegate {
+}
+    extension HistoryViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayModel.count
+        arrayModel.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         
-        let model = arrayModel[indexPath.row]
+        let resultModel = arrayModel[indexPath.row]
         
-        cell.textLabel?.text = model
         return cell
     }
-    
-            func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-                return 80
-            }
 }
+ 
+//
+//            func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//                return 80
+//            }
+//}
 
-    
-    
+
+
 //}
 
 

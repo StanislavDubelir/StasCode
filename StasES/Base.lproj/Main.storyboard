@@ -212,7 +212,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="TVd-eE-tWF"/>
                     <connections>
-                        <outlet property="historyTablaView" destination="5ZG-lw-m34" id="0Kj-qB-ooe"/>
+                        <outlet property="HistoryTableView" destination="5ZG-lw-m34" id="JIG-cO-Zcm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JuK-dk-nMi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -62,9 +62,9 @@
 			children = (
 				84A322962A5E0C2B00A38900 /* AppDelegate.swift */,
 				84A322982A5E0C2B00A38900 /* SceneDelegate.swift */,
+				84A5B44A2A77D3900087D5DD /* Model.swift */,
 				84A3229A2A5E0C2B00A38900 /* ViewController.swift */,
 				84214B502A792E4D000F0A97 /* HistoryViewController.swift */,
-				84A5B44A2A77D3900087D5DD /* Model.swift */,
 				84A3229C2A5E0C2B00A38900 /* Main.storyboard */,
 				84A3229F2A5E0C2C00A38900 /* Assets.xcassets */,
 				84A322A12A5E0C2C00A38900 /* LaunchScreen.storyboard */,

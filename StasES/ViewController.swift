@@ -7,121 +7,92 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
-    @IBOutlet weak var aTextField: UITextField!
+    @IBOutlet private weak var aTextField: UITextField!
     
-    @IBOutlet weak var bTextField: UITextField!
+    @IBOutlet private weak var bTextField: UITextField!
     
-    @IBOutlet weak var cTextField: UITextField!
+    @IBOutlet private weak var cTextField: UITextField!
     
-    @IBOutlet weak var root1Label: UILabel!
+    @IBOutlet private weak var root1Label: UILabel!
     
-    @IBOutlet weak var root2Label: UILabel!
+    @IBOutlet private weak var root2Label: UILabel!
     
-    @IBOutlet weak var discResLabel: UILabel!
+    @IBOutlet private weak var discResLabel: UILabel!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     @IBAction func btnStart() {
-        guard let aText = aTextField.text,
-              let bText = bTextField.text,
-              let cText = cTextField.text
-        else {return
-        }
         
-        func showalert (message: String) {
-            let textIsEmptyAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        func showAlert(message: String) {
+            let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "ok", style: .default, handler: nil)
-            textIsEmptyAlert.addAction(okAction)
-            self.present(textIsEmptyAlert, animated: true)
+            alert.addAction(okAction)
+            present(alert, animated: true)
         }
         
-        guard !aText.isEmpty else {
-            showalert(message: "Fill a index")
+        guard let aText = aTextField.text, !aText.isEmpty else {
+            showAlert(message: "Fill a index")
             return
         }
         
-        guard !bText.isEmpty else {
-            showalert(message: "Fill b index")
+        guard let bText = bTextField.text, !bText.isEmpty else {
+            showAlert(message: "Fill b index")
             return
         }
         
-        guard !cText.isEmpty else {
-            showalert(message: "Fill c index")
+        guard let cText = cTextField.text, !cText.isEmpty else {
+            showAlert(message: "Fill c index")
             return
         }
         
         
         guard let a = Double(aText),
               let b = Double(bText),
-              let c = Double(cText) else {return}
+              let c = Double(cText) else { return }
         
         guard a != .zero else {
-            showalert(message: "a can`t = 0")
+            showAlert(message: "a can`t = 0")
             return
         }
         
         let disc = (b * b) - 4 * a * c
+        var currentResult: PowResult = .noResults
         
-        enum Results{
-            case noRoots
-            case oneRoot
-            case twoRoots
+        if disc < .zero {
+            root1Label.text = "No roots"
+            root2Label.text = "No roots"
+            discResLabel.text = "D = \(disc)"
+            currentResult = .noResults
+        } else if disc == .zero {
+            let x = -b / (2 * a)
+            root1Label.text = "\(x)"
+            root2Label.text = "Just one root"
+            discResLabel.text = "D = \(disc)"
+            currentResult = .oneResult(result: x)
+        } else if disc > .zero {
+            let x1 = (-b + sqrt(disc)) / (2 * a)
+            let x2 = (-b - sqrt(disc)) / (2 * a)
+            root1Label.text = "\(x1)"
+            root2Label.text = "\(x2)"
+            discResLabel.text = "D = \(disc)"
+            currentResult = .twoResults(result1: x1, result2: x2)
         }
-        
-        let userDefaults = UserDefaults.standard
-
-        func saveResult(root1:String, root2:String, disc:String){
-            userDefaults.set(root1, forKey: "root1")
-            userDefaults.set(root2, forKey: "root2")
-            userDefaults.set(disc, forKey: "disc")
-            }
-        
-        
-        func calculate(for answers: Results){
-            switch answers{
-                
-            case .noRoots:
-                root1Label.text = "No roots"
-                root2Label.text = "No roots"
-                discResLabel.text = "D = \(disc)"
-            case .oneRoot:
-                let x = -b / (2 * a)
-                root1Label.text = "\(x)"
-                root2Label.text = "Just one root"
-                discResLabel.text = "D = \(disc)"
-            case .twoRoots:
-                let x1 = (-b + sqrt(disc)) / (2 * a)
-                let x2 = (-b - sqrt(disc)) / (2 * a)
-                root1Label.text = "\(x1)"
-                root2Label.text = "\(x2)"
-                discResLabel.text = "D = \(disc)"
-            }
-            saveResult(root1: root1Label.text ?? "", root2: root2Label.text ?? "", disc: discResLabel.text ?? "")
+        let resultModel = ResultModel(historyResult: currentResult)
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(resultModel){
+            UserDefaults.standard.set(encoded, forKey: "SavedResults")
             print("Save")
         }
-        guard disc >= .zero else {
-            calculate(for: .noRoots)
-            return
-        }
-        guard disc > .zero || disc < .zero else {
-            calculate(for: .oneRoot)
-            return
-        }
-        guard disc <= .zero else{
-            calculate(for: .twoRoots)
-            return
-        }
-            }
-                }
+    }
+}
 
-        
-    
-        
-            
+
 //            guard disc >= .zero else {
 //                root1Label.text = "No roots"
 //                root2Label.text = "No roots"
@@ -144,26 +115,20 @@ class ViewController: UIViewController {
 //                discResLabel.text = "D = \(disc)"
 //                return
 //            }
-        
-    
-    
-    
-    //        if disc < 0 {
-    //            root1Label.text = "No roots"
-    //            root2Label.text = "No roots"
-    //            discResLabel.text = "D = \(disc)"
-    //        }
-    //        else if disc == 0 {
-    //            let x = -b / (2 * a)
-    //            root1Label.text = "\(x)"
-    //            discResLabel.text = "D = \(disc)"
-    //        }
-    //        else if disc > 0{
-    //            let x1 = (-b + sqrt(disc)) / 2 * a
-    //            let x2 = (-b + sqrt(disc)) / 2 * a
-    //            root1Label.text = "\(x1)"
-    //            root2Label.text = "\(x2)"
-    //            discResLabel.text = "D = \(disc)"
-    
-    
 
+//        if disc < 0 {
+//            root1Label.text = "No roots"
+//            root2Label.text = "No roots"
+//            discResLabel.text = "D = \(disc)"
+//        }
+//        else if disc == 0 {
+//            let x = -b / (2 * a)
+//            root1Label.text = "\(x)"
+//            discResLabel.text = "D = \(disc)"
+//        }
+//        else if disc > 0{
+//            let x1 = (-b + sqrt(disc)) / 2 * a
+//            let x2 = (-b + sqrt(disc)) / 2 * a
+//            root1Label.text = "\(x1)"
+//            root2Label.text = "\(x2)"
+//            discResLabel.text = "D = \(disc)"
