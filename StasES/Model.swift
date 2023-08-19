@@ -22,21 +22,24 @@ enum PowResult: Codable {
 }
 
 struct ResultModel: Codable{
-    var historyResult: PowResult
-//    var date: Date
+    static var history: [ResultModel] = []
+    let historyResult: PowResult
+    let date: Date
+    
+    static func save(_ results: [PowResult]) {
+        let encodedData = results.compactMap { try? JSONEncoder().encode($0)}
+        UserDefaults.standard.set(encodedData, forKey: "savedResult")
+    }
+    
+    static func load() -> [ResultModel]{
+        guard let encodedData = UserDefaults.standard.array(forKey: "savedResult") as? [Data]
+        else {
+            return []
+        }
+        return encodedData.map {try! JSONDecoder().decode(ResultModel.self, from: $0) }
+    }
+    
 }
-
-enum CodingKeys:String, CodingKey{
-    case historyResult
-    case date
-}
-
-
-//enum CodingKeys: CodingKey {
-//    case oneResult
-//    case twoResults
-//    case noResults
-//}
 
 
 //func loadUserDefaults(for answers:PowResult ){
@@ -48,9 +51,9 @@ enum CodingKeys:String, CodingKey{
 //    case .noResults:
 //        UserDefaults.standard.string(forKey: "disc")
 //    }
-    
-    
-    
+
+
+
 //    func loadResultfromUserDefaults() -> resultModel?{
 //        guard let root1 = userDefaults.string(forKey: "root1"),
 //              let root2 = userDefaults.string(forKey: "root2"),
@@ -59,4 +62,4 @@ enum CodingKeys:String, CodingKey{
 //            return nil
 //        }
 //        return resultModel(.root1: root1, .root2: root2, .disc: disc)
-    
+

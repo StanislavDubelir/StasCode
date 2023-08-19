@@ -13,7 +13,7 @@ final class HistoryViewController: UIViewController{
     @IBOutlet private weak var historyTableView: UITableView!
     
     let identifier = "historyCell"
-    let currentDate = Date()
+    var currentDate = [Date]()
     var arrayModel = [ResultModel]()
     
     
@@ -24,25 +24,44 @@ final class HistoryViewController: UIViewController{
             let decoder = JSONDecoder()
             if let loadedresults = try? decoder.decode(ResultModel.self, from: savedResults){
                 arrayModel.append(loadedresults)
-                historyTableView?.reloadData()
+                currentDate.append(Date())
+                historyTableView.reloadData()
                 print(loadedresults)
+                historyTableView.rowHeight = 80
             }
         }
     }
 }
-    extension HistoryViewController: UITableViewDataSource{
+
+extension HistoryViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         arrayModel.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         
         let resultModel = arrayModel[indexPath.row]
         
+        let powResult = resultModel.historyResult
+        
+        switch powResult{
+        case .noResults:
+            cell.textLabel?.text = "If D = 0, cant find any roots"
+            cell.detailTextLabel?.text = "\(resultModel.date)"
+        case .oneResult(let result):
+            cell.textLabel?.text = "Just one root: \(result)"
+            cell.detailTextLabel?.text = "\(resultModel.date)"
+        case.twoResults(let result1, let result2):
+            cell.textLabel?.text = "Two roots: \(result1), \(result2)"
+            cell.detailTextLabel?.text = "\(resultModel.date)"
+        }
         return cell
     }
 }
- 
+
 //
 //            func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //                return 80

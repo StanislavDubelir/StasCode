@@ -83,9 +83,10 @@ final class ViewController: UIViewController {
             discResLabel.text = "D = \(disc)"
             currentResult = .twoResults(result1: x1, result2: x2)
         }
-        let resultModel = ResultModel(historyResult: currentResult)
+        
+        let resultModel = ResultModel(historyResult: currentResult, date: Date())
         let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(resultModel){
+        if let encoded = try? encoder.encode(resultModel) {
             UserDefaults.standard.set(encoded, forKey: "SavedResults")
             print("Save")
         }
