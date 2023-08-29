@@ -19,19 +19,24 @@ final class HistoryViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if let savedResults = UserDefaults.standard.object(forKey: "SavedResults") as? Data {
+//        if let savedResults = UserDefaults.standard.object(forKey: "SavedResults") as? Data {
+//            let decoder = JSONDecoder()
+//            if let loadedresults = try? decoder.decode(ResultModel.self, from: savedResults){
+//                arrayModel.append(loadedresults)
+//                currentDate.append(Date())
+        if let savedResults = UserDefaults.standard.data(forKey: "SavedResult") {
             let decoder = JSONDecoder()
-            if let loadedresults = try? decoder.decode(ResultModel.self, from: savedResults){
-                arrayModel.append(loadedresults)
-                currentDate.append(Date())
+            if let loadedResults = try? decoder.decode([ResultModel].self, from: savedResults) {
+                arrayModel = loadedResults
+                currentDate = loadedResults.map {$0.date}
                 historyTableView.reloadData()
-                print(loadedresults)
+                print(loadedResults)
                 historyTableView.rowHeight = 80
             }
         }
     }
 }
+
 
 extension HistoryViewController: UITableViewDataSource {
     
@@ -50,13 +55,13 @@ extension HistoryViewController: UITableViewDataSource {
         switch powResult{
         case .noResults:
             cell.textLabel?.text = "If D = 0, cant find any roots"
-            cell.detailTextLabel?.text = "\(resultModel.date)"
+            cell.detailTextLabel?.text = "\(resultModel.formattedDate)"
         case .oneResult(let result):
             cell.textLabel?.text = "Just one root: \(result)"
-            cell.detailTextLabel?.text = "\(resultModel.date)"
+            cell.detailTextLabel?.text = "\(resultModel.formattedDate)"
         case.twoResults(let result1, let result2):
             cell.textLabel?.text = "Two roots: \(result1), \(result2)"
-            cell.detailTextLabel?.text = "\(resultModel.date)"
+            cell.detailTextLabel?.text = "\(resultModel.formattedDate)"
         }
         return cell
     }

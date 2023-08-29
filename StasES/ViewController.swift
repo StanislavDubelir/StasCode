@@ -84,12 +84,18 @@ final class ViewController: UIViewController {
             currentResult = .twoResults(result1: x1, result2: x2)
         }
         
-        let resultModel = ResultModel(historyResult: currentResult, date: Date())
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(resultModel) {
-            UserDefaults.standard.set(encoded, forKey: "SavedResults")
-            print("Save")
-        }
+        let currentDate = Date()
+        let resultModel = ResultModel(historyResult: currentResult, date: currentDate)
+        
+        var historyResult = ResultModel.load()
+        historyResult.append(resultModel)
+        ResultModel.save(history:historyResult)
+
+//        let encoder = JSONEncoder()
+//        if let encoded = try? encoder.encode(resultModel) {
+//            UserDefaults.standard.set(encoded, forKey: "SavedResults")
+//            print("Save")
+//        }
     }
 }
 

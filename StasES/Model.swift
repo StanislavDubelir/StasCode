@@ -7,59 +7,59 @@
 
 import Foundation
 
-//enum ResultsModelEnum:String,Codable{
-//    case root1
-//    case root2
-//    case disc
-//}
-let dateFormatter = DateFormatter()
-
-
 enum PowResult: Codable {
     case oneResult(result: Double)
     case twoResults(result1: Double, result2: Double)
     case noResults
 }
 
-struct ResultModel: Codable{
-    static var history: [ResultModel] = []
+struct ResultModel: Codable {
     let historyResult: PowResult
     let date: Date
+    let formattedDate: String
     
-    static func save(_ results: [PowResult]) {
-        let encodedData = results.compactMap { try? JSONEncoder().encode($0)}
-        UserDefaults.standard.set(encodedData, forKey: "savedResult")
+    init(historyResult: PowResult, date: Date) {
+        self.historyResult = historyResult
+        self.date = date
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy HH:mm"
+        dateFormatter.locale = Locale(identifier: "uk_UA")
+        formattedDate = dateFormatter.string(from: date)
     }
     
-    static func load() -> [ResultModel]{
-        guard let encodedData = UserDefaults.standard.array(forKey: "savedResult") as? [Data]
-        else {
-            return []
+    
+
+    
+   static func save(history: [ResultModel]) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(history) {
+            UserDefaults.standard.set(encoded, forKey: "SavedResult")
+            print("Saved")
         }
-        return encodedData.map {try! JSONDecoder().decode(ResultModel.self, from: $0) }
     }
     
+   static func load() -> [ResultModel] {
+        let decoder = JSONDecoder()
+        if let savedResults = UserDefaults.standard.data(forKey: "SavedResult"),
+           let decoded = try? decoder.decode([ResultModel].self, from: savedResults) {
+            print(savedResults)
+            return decoded
+        }
+        return []
+    }
+    
+//    static let dateFormatter: DateFormatter = {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "dd.MM.yyyy HH:mm"
+//        formatter.locale = Locale(identifier: "uk_UA")
+//        return formatter
+//    }()
+//
+//    var formattedDate: String {
+//        return ResultModel.dateFormatter.string(from: date)
+//    }
 }
 
 
-//func loadUserDefaults(for answers:PowResult ){
-//    switch answers{
-//    case .oneResult(_):
-//        UserDefaults.standard.string(forKey: "root1")
-//    case .twoResults(_, _):
-//        UserDefaults.standard.string(forKey: "root2")
-//    case .noResults:
-//        UserDefaults.standard.string(forKey: "disc")
-//    }
-
-
-
-//    func loadResultfromUserDefaults() -> resultModel?{
-//        guard let root1 = userDefaults.string(forKey: "root1"),
-//              let root2 = userDefaults.string(forKey: "root2"),
-//              let disc = userDefaults.string(forKey: "disc")
-//        else {
-//            return nil
-//        }
-//        return resultModel(.root1: root1, .root2: root2, .disc: disc)
 
